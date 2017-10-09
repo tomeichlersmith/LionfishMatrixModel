@@ -4,11 +4,11 @@ source("MatrixModelCSim.R")
 # Reserved Names (Used in MatrixModelCSim.R):
 #   Acf, Acm, Aif, Awf, BirthDeath, cr, CRISPRintro, crisprpop, dCRBegin, dCRLength, dCRNumber,
 #   dDE, dDL, df, dFracCatchable, dHBegin, dHLength, dHNumber, dInitialPop, dMA, dME, dMinPop, dMJ0,
-#   dML, dMortSlope, dRf, dshortout, HMatrix, harv, Harvest, identity5, JAindices, Jcf, Jcm, MatrixModelCSim,
+#   dML, dMortSlope, dnhe, dRf, dshortout, HMatrix, harv, Harvest, identity5, JAindices, Jcf, Jcm, MatrixModelCSim,
 #   P, pv0, rwf, totalpop, zero5
 
 # # Test
-pR <- MatrixModelCSim(nhe=0.0)
+pR <- MatrixModelCSim(nhe=0.01)
 plot(pR)
 
 ### Option Ranges for Various Constants ####
