@@ -10,10 +10,26 @@ source("MatrixModelCSim.R")
 #   MatrixModelCSim,maxcatch,P,rwf,totalpop
 
 CRLengthOpts <- c(1,12,24,36,48,60,72,84,96,108,120) #11
+CorrespondingMinCRNum <- NULL
 
-while (eradtime == 100 && crnum < 100000)
-{
-  finalnums <- MatrixModelCSim(
-    CRNumber = crnum, CRLength = crlen,
-    shortout = TRUE)
+for (i in 1:length(CRLengthOpts)) {
+  
+  crnum <- 5
+  eradtime <- 100
+  while (eradtime >= 100 && crnum < 1000) {
+    finalnums <- MatrixModelCSim(
+      CRNumber = crnum, CRLength = CRLengthOpts[i], nhe = 0,
+      shortout = TRUE)
+    eradtime <- finalnums["EradTime"]
+    crnum <- crnum+5
+  }
+  
+  CorrespondingMinCRNum[i] <- crnum
 }
+
+library("ggplot2")
+tmpdf <- data.frame(CRLength = CRLengthOpts, MinCRNum = CorrespondingMinCRNum)
+ggplot() +
+  geom_point(data = tmpdf, aes(x = CRLength, y = CorrespondingMinCRNum)) +
+  xlab('CRLength') +
+  ylab('MinCRNumber')

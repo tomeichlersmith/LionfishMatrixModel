@@ -1,3 +1,4 @@
+#This file is timing the import and running of the simulation funciton
 
 times <- NULL
 trials <- seq(1,2000,100)
