@@ -215,6 +215,11 @@ CRISPRintro <- function(timestep, Rf, CRNumber, CRBegin, CRLength) {
 }
 
 ### Model Definition #########################################################################
+#Note: This model currently has absolutely no dependence on random number generation. In other words,
+# this model, while it is really complicated, is still completely deterministic. This determinism means
+# that one could generate the results for any combination of inputs once and never have to re-run the
+# simulation. Thus, one could speed up the analysis if one generates a method for iterating over the
+# different inputs and storing the results that one wants to analyze corresponding to the given inputs.
 
 #Runs one simulation, returning a vector that has a record of the total population
 #Uses BirthDeath, CatchRelease, totalpop
