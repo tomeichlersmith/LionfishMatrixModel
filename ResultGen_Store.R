@@ -18,6 +18,11 @@ mortslopeOpts <- seq(0,2*dMortSlope,(2*dMortSlope)/10)
 
 numbertrials <- length(crnumberOpts)*length(crlengthOpts)*length(hnumberOpts)*length(hlengthOpts)*length(nheOpts)*length(mortslopeOpts)
 
+#File Setup
+titlerow <- data.frame(
+  name = 
+)
+
 for (crnum in crnumberOpts) {
   for (crlen in crlengthOpts) {
     for (hnum in hnumberOpts) {
@@ -36,7 +41,18 @@ for (crnum in crnumberOpts) {
               shortout = TRUE)
             
             #Output results to file
-            
+            singlerow <- data.frame(
+              names=c("CRNumber","CRLength","HNumber","HLength","NHE","MortSlope","EradTime"),
+              a=c(crnum,crlen,hnum,hlen,nhe,mslope,results["EradTime"])
+              ) #Create data.frame for the simulated row
+            write.table(
+              singlerow,
+              "DUMMYNAMETHATISNTREAL",
+              row.names = FALSE, col.names = FALSE,
+              sep = ",",
+              quote = FALSE,
+              append = TRUE
+              )
           }
         }
       }
