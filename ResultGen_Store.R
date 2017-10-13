@@ -3,6 +3,8 @@
 #The largest difficulty in this case is the huge size of the input space. This vastness requires the storage
 # to occur after each run of the model, which is much slower but safer in the event the machine running this
 # code freezes due to running out of RAM.
+#This wil create a very large .csv file (with rows on the order of millions), but the information will be stored
+# and accessing it will be a problem for a later day.
 
 #Include file that defines simulation function
 source("MatrixModelCSim.R")
@@ -21,7 +23,7 @@ numbertrials <- length(crnumberOpts)*length(crlengthOpts)*length(hnumberOpts)*le
 #File Setup
 # Only evaluate if creating a new output file i.e. let setupfile = TRUE if you want to overwrite
 #  a previous file or create a new file with a new name, otherwise let setupfile = FALSE
-outputfile <- "DUMMYNAMETHATISNOTREALATALL.csv"
+outputfile <- "MatrixModelData_10_12_2017.csv"
 setupfile <- TRUE
 if (setupfile) {
   titlerow <- c("CRNumber","CRLength","HNumber","HLength","NHE","MortSlope","EradTime")
@@ -33,12 +35,16 @@ if (setupfile) {
   )
 }
 
+trial <- 0
+
 for (crnum in crnumberOpts) {
   for (crlen in crlengthOpts) {
     for (hnum in hnumberOpts) {
       for (hlen in hlengthOpts) {
         for (nhe in nheOpts) {
           for (mslope in mortslopeOpts) {
+            
+            trial <- trial + 1
             
             #Run Simulation with current values for inputs
             results <- MatrixModelCSim(
@@ -61,10 +67,10 @@ for (crnum in crnumberOpts) {
               sep = ",",
               append = TRUE
               )
-          }
-        }
-      }
-    }
-  }
-}
+          } #mslope
+        } #nhe
+      } #hlen
+    } #hnum
+  } #crlen
+} #crnum
 
