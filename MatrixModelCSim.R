@@ -143,7 +143,13 @@ rwf <- function(popvector) {
 popslopeflat <- function(poprecord,minsd) {
   
   if (length(poprecord) > 10) {
-    if(sd(tail(poprecord,10)) < minsd)
+    last10 <- tail(poprecord,10)
+    slopes10 <- NULL
+    for (p in 2:10 ) {
+      slopes10 <- last10[p]-last10[p-1]
+    }
+    print(abs(mean(slopes10)))
+    if(abs(mean(slopes10)) < minsd)
       return (TRUE)
   }
   
