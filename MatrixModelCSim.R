@@ -31,6 +31,8 @@
 #     FALSE ==> returns entire population record from the simulation
 #     TRUE ==> returns list of the form
 #         {EradTime = Time Steps from CRBegin to Eradication, MaxCpop = Time Steps from CRBegin to Max CRISPR Population}
+#   minsd -> minimum standard deviation of past 10 values to consider the population vs time graph flat (1)
+
 
 #Default Argument Values
 dCRNumber <- 100
@@ -54,6 +56,7 @@ dDE <- 3
 df <- 194577
 dshortout <- FALSE
 dcRecordOut <- FALSE
+dminsd <- 1
 
 #Helpful Indices of population vector
 Jcf <- 6
@@ -134,6 +137,17 @@ rwf <- function(popvector) {
     return (0) #Force the production matrix (P) to produce the zero vector when multiplied by adult population vector
   else
     return (popvector[Awf]/totaladultfemales)
+}
+
+#Slope of population vs time graph - flat means sustained population has been reached
+popslopeflat <- function(poprecord,minsd) {
+  
+  if (length(poprecord) > 10) {
+    if(sd(tail(poprecord,10)) < minsd)
+      return (TRUE)
+  }
+  
+  return (FALSE)
 }
 
 ### Matrix Constructions #########################################################################
@@ -229,7 +243,7 @@ MatrixModelCSim <- function(
     nhe = dnhe, FracCatchable = dFracCatchable, MortSlope = dMortSlope,
     InitialPop = dInitialPop, MinPop = dMinPop,
     Rf = dRf, MJ0 = dMJ0, ML = dML, MA = dMA, DL = dDL, ME = dME, DE = dDE, f = df,
-    shortout = dshortout, cRecordOut = dcRecordOut
+    shortout = dshortout, cRecordOut = dcRecordOut, minsd = dminsd
   )
 {
   tpopRecord <- NULL #sets tpopRecord
@@ -239,7 +253,7 @@ MatrixModelCSim <- function(
   tpop <- totalpop(pv)
   
   t <- 1 #Starting at time step 1
-  while (tpop > MinPop && t < 1200+CRBegin)
+  while (tpop > MinPop && t < 1200+CRBegin && !popslopeflat(tpopRecord,minsd))
   {
     BD <- BirthDeath(pv, MortSlope, Rf, nhe, ML, DL, MA, ME, DE, MJ0, f) #Constructs BirthDeath Matrix from current pv
     HV <- Harvest(pv, t, HNumber, HBegin, HLength, FracCatchable) #Constructs Harvest Matrix from pv,
@@ -270,15 +284,15 @@ MatrixModelCSim <- function(
   }
 }
 
-# # Test
-# library("ggplot2")
-# tmp <- MatrixModelCSim(
-#   cRecordOut = TRUE)
-# pR <- tmp$Tpop
-# cR <- tmp$Cpop
-# tmpdf <- data.frame(Years = (1:length(pR)-dCRBegin)/12, TPop = pR, CPop = cR)
-# ggplot() +
-#   geom_point(data = tmpdf, aes(x = Years, y = TPop, color = "Total")) +
-#   geom_point(data = tmpdf, aes(x = Years, y = CPop, color = "CRISPR")) +
-#   xlab('Years') +
-#   ylab('Population')
+# Test
+library("ggplot2")
+tmp <- MatrixModelCSim(
+  cRecordOut = TRUE)
+pR <- tmp$Tpop
+cR <- tmp$Cpop
+tmpdf <- data.frame(Years = (1:length(pR)-dCRBegin)/12, TPop = pR, CPop = cR)
+ggplot() +
+  geom_point(data = tmpdf, aes(x = Years, y = TPop, color = "Total")) +
+  geom_point(data = tmpdf, aes(x = Years, y = CPop, color = "CRISPR")) +
+  xlab('Years') +
+  ylab('Population')
